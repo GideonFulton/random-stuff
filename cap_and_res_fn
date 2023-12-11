@@ -1,0 +1,42 @@
+import math as m
+
+capacitors = [0.001, 0.01, 0.1, 0.47, 1, 2.2, 4.7, 10, 22, 100]
+capacitors = [i * 10 ** (-6) for i in capacitors]
+resistors = [10, 100, 1000, 10000, 100000, 1000000, 10000000, 127000, 15, 150, 1500, 15000, 150000, 22, 220, 2200, 22000, 200000, 220000, 33, 330, 3300, 33000, 330000, 47, 470, 4700, 47000, 470000, 56, 560, 5600, 56000, 560000, 68, 680, 6800, 68000, 680000, 82, 820, 8200, 82000, 820000]
+
+best_lp_cap = capacitors[0]
+best_hp_cap = capacitors[0]
+
+best_lp_res = resistors[0]
+best_hp_res = resistors[0]
+
+target_lp_freq = 320
+target_hp_freq = 3200
+
+best_lp_error = abs(1 / (2 * m.pi * best_lp_res * best_lp_cap) - target_lp_freq)
+best_hp_error = abs(1 / (2 * m.pi * best_hp_res * best_hp_cap) - target_hp_freq)
+
+for cap in capacitors:
+    for res in resistors:
+        if res > 50 and res <= 1000:
+            lp_cutoff = 1 / (2 * m.pi * res * cap)
+            hp_cutoff = 1 / (2 * m.pi * res * cap)
+
+            lp_error = abs(lp_cutoff - target_lp_freq)
+            hp_error = abs(hp_cutoff - target_hp_freq)
+
+            if lp_error < best_lp_error:
+                best_lp_error = lp_error
+                best_lp_cap = cap
+                best_lp_res = res
+
+            if hp_error < best_hp_error:
+                best_hp_error = hp_error
+                best_hp_cap = cap
+                best_hp_res = res
+
+print("Best low pass capacitor is", best_lp_cap)
+print("Best low pass resistor is", best_lp_res)
+print("\n")
+print("Best high pass capacitor is", best_hp_cap)
+print("Best high pass resistor is", best_hp_res)
